@@ -18,10 +18,9 @@ class FrontEndNode : public rclcpp::Node
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr publisher_;
     rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr subscription_;
-    size_t count_;
   public:
     FrontEndNode(String sender_topic, String reciever_topic)
-    : Node("front-end-node"), count_(0)
+    : Node("front-end-node")
     {
       publisher_ = this->create_publisher<std_msgs::msg::String>(sender_topic, 10);
       subscription_ = this->create_subscription<std_msgs::msg::String>(
@@ -59,7 +58,7 @@ int main(int argc, char** argv)
   for (int i = 1; i < argc; i++) {
     node.send_handler(std::stoi(argv[i]))
   }
-  rclcpp::spin(std::make_shared<FrontEndNode>());
+  rclcpp::spin(std::make_shared(node));
   rclcpp::shutdown();
 
   return 0;
