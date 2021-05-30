@@ -65,9 +65,11 @@ target_include_directories(front-end-node PUBLIC
 )
 
 ament_target_dependencies(front-end-node rclcpp std_msgs projeto_bixo_interfaces)
+ament_target_dependencies(back-end-node rclcpp std_msgs projeto_bixo_interfaces)
 
 install(TARGETS 
   front-end-node
+  back-end-node
   DESTINATION lib/${PROJECT_NAME}
 )
 

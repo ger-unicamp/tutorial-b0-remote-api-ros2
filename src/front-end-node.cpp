@@ -16,7 +16,7 @@ class FrontEndNode : public rclcpp::Node
 
   public:
     FrontEndNode(): 
-      Node("front-end-node")
+      rclcpp::Node("front-end-node")
     {
       client = this->create_client<projeto_bixo_interfaces::srv::ProjetoBixoService>("client");
     }
