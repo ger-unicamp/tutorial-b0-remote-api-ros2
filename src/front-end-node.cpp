@@ -1,63 +1,56 @@
 #include <iostream>
-#include <chrono>
 #include <functional>
 #include <memory>
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
-#include "std_msgs/msg/int32.hpp"
+#include "projeto_bixo_interfaces/msg/Handler.hpp"
+#include "projeto_bixo_interfaces/srv/projeto_bixo_service.hpp"
 
 #include "b0RemoteApi.h"
-
-using namespace std::chrono_literals;
 
 class FrontEndNode : public rclcpp::Node
 {
   private:
-    rclcpp::TimerBase::SharedPtr timer_;
-    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr publisher_;
-    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr subscription_;
+    rclcpp::Client<projeto_bixo_interfaces::srv::ProjetoBixoService>::SharedPtr client;
+
   public:
-    FrontEndNode(String sender_topic, String reciever_topic)
-    : Node("front-end-node")
+    FrontEndNode(): 
+      Node("front-end-node")
     {
-      publisher_ = this->create_publisher<std_msgs::msg::String>(sender_topic, 10);
-      subscription_ = this->create_subscription<std_msgs::msg::String>(
-        reciever_topic, 
-        10, 
-        std::bind(&FrontEndNode::topic_callback, this, _1)
-      );
-      timer_ = this->create_wall_timer(
-      500ms, std::bind(&FrontEndNode::send_handler, this));
+      client = this->create_client<projeto_bixo_interfaces::srv::ProjetoBixoService>("client");
     }
-    void send_handler(int handler)
+
+    void send_request(string component, long handler)
     {
-      std_msgs::msg::Int32 message;
-      message.data = handler;
-      RCLCPP_INFO(this->get_logger(), "Publishing handler: '%d'", message.data);
-      publisher_->publish(message);
-    }
-    void topic_callback(const std_msgs::msg::Int32::SharedPtr msg) const
-    {
-      RCLCPP_INFO(this->get_logger(), "Handler: '%d' was recieved", msg->data);
+      auto request = std::make_shared<projeto_bixo_interfaces::srv::ProjetoBixoService::Request>();
+      request->component = component;
+      request->handler = handler;
+
+      auto result = client->async_send_request(request);
+      if (rclcpp::spin_until_future_complete(std::make_shared<rclpp::Node>(this), result) ==
+        rclcpp::executor::FutureReturnCode::SUCCESS)
+      {
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Response: %s", result.get()->response);
+      } else {
+        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to call service projeto_bixo_service");    // CHANGE
+      }
     }
 };
 
 
 int main(int argc, char** argv)
 {
-  
-  printf("hello world tutorial-b0-remote-api-ros2 package\n");
 
-  b0RemoteApi client("TutorialRemoteAPIRosClient","TutorialRemoteAPI");
+  b0RemoteApi client("TutorialRemoteAPIRosClient","b0RemoteApiAddOn");
 
   rclcpp::init(argc, argv);
-  FrontEndNode node("front-end-sender", "front-end-reciever");
+  FrontEndNode node;
 
   for (int i = 1; i < argc; i++) {
-    node.send_handler(std::stoi(argv[i]))
+    node.send_request(std::stoi(argv[i]))
   }
+
   rclcpp::spin(std::make_shared(node));
   rclcpp::shutdown();
 

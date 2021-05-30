@@ -14,6 +14,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(projeto_bixo_interfaces REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -63,7 +64,7 @@ target_include_directories(front-end-node PUBLIC
   if(WINDOWS) PUBLIC ${BOOST_DIR} endif() # pasta raiz do boost no windows
 )
 
-ament_target_dependencies(front-end-node rclcpp std_msgs)
+ament_target_dependencies(front-end-node rclcpp std_msgs projeto_bixo_interfaces)
 
 install(TARGETS 
   front-end-node
