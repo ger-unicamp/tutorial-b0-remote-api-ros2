@@ -47,8 +47,8 @@ int main(int argc, char** argv)
   rclcpp::init(argc, argv);
   FrontEndNode node;
 
-  for (int i = 1; i < argc; i++) {
-    node.send_request(std::stoi(argv[i]))
+  for (int i = 1; i < argc; i+=2) {
+    node.send_request(argv[i], std::stoi(argv[i+1]))
   }
 
   rclcpp::spin(std::make_shared(node));
