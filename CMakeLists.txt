@@ -32,7 +32,7 @@ set(COPPELIA_B0BASED_DIR "${COPPELIA_PROGRAMMING_DIR}/b0RemoteApiBindings/cpp")
 set(COPPELIA_MSGPACK_DIR "${COPPELIA_B0BASED_DIR}/msgpack-c/include")
 set(COPPELIA_B0INCLUDE_DIR "${COPPELIA_PROGRAMMING_DIR}/bluezero/include/b0/bindings")
 
-message(STATUS "Incluindo diretórios")
+message(STATUS "[PB] Incluindo diretórios")
 
 include_directories(${COPPELIA_B0BASED_DIR})
 include_directories(${COPPELIA_MSGPACK_DIR})
