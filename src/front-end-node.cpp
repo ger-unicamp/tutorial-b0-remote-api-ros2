@@ -21,14 +21,14 @@ class FrontEndNode : public rclcpp::Node
       client = this->create_client<projeto_bixo_interfaces::srv::ProjetoBixoService>("client");
     }
 
-    void send_request(string component, long handler)
+    void send_request(std::string component, long handler)
     {
       auto request = std::make_shared<projeto_bixo_interfaces::srv::ProjetoBixoService::Request>();
       request->component = component;
       request->handler = handler;
 
       auto result = client->async_send_request(request);
-      if (rclcpp::spin_until_future_complete(std::make_shared<rclpp::Node>(this), result) ==
+      if (rclcpp::spin_until_future_complete(std::make_shared<rclcpp::Node>(this), result) ==
         rclcpp::executor::FutureReturnCode::SUCCESS)
       {
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Response: %s", result.get()->response);
@@ -48,10 +48,10 @@ int main(int argc, char** argv)
   FrontEndNode node;
 
   for (int i = 1; i < argc; i+=2) {
-    node.send_request(argv[i], std::stoi(argv[i+1]))
+    node.send_request(argv[i], std::stoi(argv[i+1]));
   }
 
-  rclcpp::spin(std::make_shared(node));
+  rclcpp::spin(std::make_shared<rclcpp::Node>(node));
   rclcpp::shutdown();
 
   return 0;

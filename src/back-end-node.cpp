@@ -9,10 +9,10 @@
 
 #include "b0RemoteApi.h"
 
-class BackEndNode : public rlcpp::Node
+class BackEndNode : public rclcpp::Node
 {
     private:
-        rclcpp::Service<tutorial_interfaces::srv::AddThreeInts>::SharedPtr service;
+        rclcpp::Service<projeto_bixo_interfaces::srv::ProjetoBixoService>::SharedPtr service;
     public:
     
         BackEndNode():
