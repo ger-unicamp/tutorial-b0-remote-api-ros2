@@ -2,6 +2,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <cstdarg>
 
 #include "rclcpp/rclcpp.hpp"
 #include "projeto_bixo_interfaces/msg/Handler.hpp"
@@ -23,13 +24,28 @@ class BackEndNode : public rclcpp::Node
         }
 
         void send_response(const std::shared_ptr<projeto_bixo_interfaces::srv::ProjetoBixoService::Request> request,     // CHANGE
-          std::shared_ptr<tutorial_interfaces::srv::ProjetoBixoService::Response> response)
+          std::shared_ptr<projeto_bixo_interfaces::srv::ProjetoBixoService::Response> response)
         {
             std::string response_builder = "Request recieved with params: ";
             response_builder += std::to_string(request->component) + " " + std::to_string(request->handler);
             response->response = response_builder;
 
             RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "sending back response: %s", response->response);
+        }
+
+    private:
+        std::string build_request(int argc, ...)
+        {
+            std::va_list args;
+            va_start(args, argc);
+            char[1000] response_builder;
+            for (int i =0; i < argc; i++)
+            {
+                char* arg = va_arg(args, char*);
+                strcpy(response_builder, arg);
+            }
+            va_end(args);
+            return std::string(response_string);
         }
 };
 

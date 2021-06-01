@@ -49,17 +49,15 @@ message(STATUS "[PB] Adicionando os executáveis front-end-node e b0RemoteApi")
 add_executable(front-end-node src/front-end-node.cpp ${COPPELIA_B0BASED_DIR}/b0RemoteApi.cpp)
 add_executable(back-end-node src/back-end-node.cpp)
 
-if (LINUX)
-  target_include_directories(front-end-node PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-    PUBLIC ${COPPELIA_ROOT_DIR} # pasta raiz do Coppelia e localizacao do boost
-    PUBLIC ${COPPELIA_B0BASED_DIR} # pasta do b0
-    PUBLIC ${COPPELIA_MSGPACK_DIR} # do msgpack
-    PUBLIC ${COPPELIA_B0INCLUDE_DIR} # do c.h
-    if(WINDOWS) PUBLIC ${BOOST_DIR} endif() # pasta raiz do boost no windows
-  )
-endif()
+target_include_directories(front-end-node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  PUBLIC ${COPPELIA_ROOT_DIR} # pasta raiz do Coppelia e localizacao do boost
+  PUBLIC ${COPPELIA_B0BASED_DIR} # pasta do b0
+  PUBLIC ${COPPELIA_MSGPACK_DIR} # do msgpack
+  PUBLIC ${COPPELIA_B0INCLUDE_DIR} # do c.h
+  if(WINDOWS) PUBLIC ${BOOST_DIR} endif() # pasta raiz do boost no windows
+)
 
 target_include_directories(back-end-node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
