@@ -5,7 +5,7 @@
 #include <cstdarg>
 
 #include "rclcpp/rclcpp.hpp"
-#include "projeto_bixo_interfaces/msg/Handler.hpp"
+#include "projeto_bixo_interfaces/msg/handler.hpp"
 #include "projeto_bixo_interfaces/srv/projeto_bixo_service.hpp"
 
 #include "b0RemoteApi.h"
@@ -20,32 +20,29 @@ class BackEndNode : public rclcpp::Node
             rclcpp::Node("back-end-node")
         {
             this->service = 
-                this->create_service<projeto_bixo_interfaces::srv::ProjetoBixoService>("service",  &this->send_response);
+                this->create_service<projeto_bixo_interfaces::srv::ProjetoBixoService>("service", this->send_response);
         }
 
-        void send_response(const std::shared_ptr<projeto_bixo_interfaces::srv::ProjetoBixoService::Request> request,     // CHANGE
+        static void send_response(const std::shared_ptr<projeto_bixo_interfaces::srv::ProjetoBixoService::Request> request,     // CHANGE
           std::shared_ptr<projeto_bixo_interfaces::srv::ProjetoBixoService::Response> response)
         {
-            std::string response_builder = "Request recieved with params: ";
-            response_builder += std::to_string(request->component) + " " + std::to_string(request->handler);
-            response->response = response_builder;
-
+            response->response = build_request(4, "Request recieved with params: ", request->component, " ", std::to_string(request->handler));
             RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "sending back response: %s", response->response);
         }
 
     private:
-        std::string build_request(int argc, ...)
+        static std::string build_request(int argc, ...)
         {
             std::va_list args;
             va_start(args, argc);
-            char[1000] response_builder;
+            char response_builder[1000];
             for (int i =0; i < argc; i++)
             {
                 char* arg = va_arg(args, char*);
                 strcpy(response_builder, arg);
             }
             va_end(args);
-            return std::string(response_string);
+            return std::string(response_builder);
         }
 };
 
@@ -55,7 +52,7 @@ int main(int argc, char** argv)
 
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Ready to recieve rquests!");
 
-    rclcpp::spin(std::make_shared<rclcpp::Node>(BackEndNode()));
+    rclcpp::spin(std::make_shared<BackEndNode>());
     rclcpp::shutdown();
 
     return 0;
