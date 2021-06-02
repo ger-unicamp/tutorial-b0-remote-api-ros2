@@ -17,7 +17,7 @@ class BackEndNode : public rclcpp::Node
     public:
     
         BackEndNode():
-            rclcpp::Node("back-end-node")
+            rclcpp::Node("back_end_node")
         {
             this->service = 
                 this->create_service<projeto_bixo_interfaces::srv::ProjetoBixoService>("service", this->send_response);
