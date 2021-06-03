@@ -20,7 +20,7 @@ class BackEndNode : public rclcpp::Node
             rclcpp::Node("back_end_node")
         {
             this->service = 
-                this->create_service<projeto_bixo_interfaces::srv::ProjetoBixoService>("service", this->send_response);
+                this->create_service<projeto_bixo_interfaces::srv::ProjetoBixoService>("projeto_bixo_service", this->send_response);
         }
 
         static void send_response(const std::shared_ptr<projeto_bixo_interfaces::srv::ProjetoBixoService::Request> request,     // CHANGE
