@@ -1,4 +1,4 @@
-# Projeto bixo
+# Tutorial de integração do CoppeliaSIM com o ROS2 via B0 Remote API
 
 Proposta arquitetural
 
